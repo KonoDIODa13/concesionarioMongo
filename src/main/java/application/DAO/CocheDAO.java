@@ -19,13 +19,12 @@ public class CocheDAO {
         try {
             con = ConnectionDB.conectar();
 
-
             //La clase MongoDatabase nos ofrece el método getDatabase() que nos permite seleccionar la base de datos
             //con la que queremos trabajar
             // Me conecto a la BD "taller" si NO existe la crea.
 
+            assert con != null;
             MongoDatabase database = con.getDatabase("concesionario");
-
 
             //creando una coleccion
             database.createCollection("coche");
@@ -38,7 +37,7 @@ public class CocheDAO {
             collection.drop();
             System.out.println("La coleccion se ha borrado Correctamente.\n");
             //creo una nueva coleccion
-            database.createCollection("taller");
+            database.createCollection("coche");
             System.out.println("Coleccion creada Satisfactoriamente.\n");
 
 
