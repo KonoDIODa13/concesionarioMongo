@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package application.DAO;
+package application.connection;
 
 import application.utils.R;
 import com.mongodb.MongoClient;
