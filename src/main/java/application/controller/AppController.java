@@ -86,11 +86,11 @@ public class AppController implements Initializable {
         insertarCampo(campos, marca);
         insertarCampo(campos, modelo);
         insertarCampo(campos, tipo);
-        if (crud.insertarCoche(campos))
+        if (crud.insertarCoche(campos)) {
             AlertUtils.mostrarConfirmacion("Coche creado correctamente.");
-
-        cargarTabla();
-        limpiarCampos(event);
+            cargarTabla();
+            limpiarCampos(event);
+        }
     }
 
     @FXML
