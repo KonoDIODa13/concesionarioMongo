@@ -19,10 +19,10 @@
       <TextField fx:id="tfMarca" layoutX="150.0" layoutY="115.0" />
       <TextField fx:id="tfModelo" layoutX="150.0" layoutY="149.0" />
       <ComboBox fx:id="cbTipo" layoutX="149.0" layoutY="185.0" prefWidth="150.0" promptText="seleccione uno" />
-      <Button layoutX="66.0" layoutY="233.0" mnemonicParsing="false" onAction="#nuevoCoche" text="Nuevo" />
-      <Button layoutX="135.0" layoutY="233.0" mnemonicParsing="false" onAction="#guardarCoche" text="Guardar" />
-      <Button layoutX="216.0" layoutY="233.0" mnemonicParsing="false" onAction="#modificarCoche" text="Modificar" />
-      <Button layoutX="305.0" layoutY="233.0" mnemonicParsing="false" onAction="#eliminarCoche" text="Borrar" />
+      <Button layoutX="71.0" layoutY="233.0" mnemonicParsing="false" onAction="#guardarCoche" text="Guardar" />
+      <Button layoutX="150.0" layoutY="233.0" mnemonicParsing="false" onAction="#modificarCoche" text="Modificar" />
+      <Button layoutX="240.0" layoutY="233.0" mnemonicParsing="false" onAction="#eliminarCoche" text="Borrar" />
+      <Button layoutX="319.0" layoutY="233.0" mnemonicParsing="false" onAction="#limpiarCampos" text="Limpiar Campos" />
       <Button layoutX="562.0" layoutY="515.0" mnemonicParsing="false" onAction="#salirApp" text="Salir" />
       <Label layoutX="39.0" layoutY="519.0" text="Coches v6" />
       <TableView fx:id="tvCoches" layoutX="74.0" layoutY="294.0" onMouseClicked="#getCoche" prefHeight="200.0" prefWidth="516.0">

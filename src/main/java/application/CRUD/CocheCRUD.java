@@ -41,14 +41,6 @@ public class CocheCRUD {
         AlertUtils.mostrarConfirmacion("Coche creado correctamente");
     }
 
-    public boolean compruebaCampo(String contenido, String campo) {
-        boolean bool = true;
-        if (contenido.isEmpty()) {
-            AlertUtils.mostrarError("El campo " + campo + " está vacio");
-            bool = false;
-        }
-        return bool;
-    }
 
     public void modificarCoche(List<String> campos, Coche antiguoCoche) {
         if (!comprobaciones(campos)) return;
@@ -69,4 +61,12 @@ public class CocheCRUD {
                 compruebaCampo(campos.get(3), "tipo");
     }
 
+    public boolean compruebaCampo(String contenido, String campo) {
+        boolean bool = true;
+        if (contenido.isEmpty()) {
+            AlertUtils.mostrarError("El campo " + campo + " está vacio");
+            bool = false;
+        }
+        return bool;
+    }
 }

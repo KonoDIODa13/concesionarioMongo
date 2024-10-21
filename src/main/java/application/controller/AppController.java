@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
+    // Implemento la clase Initializable para cargar tanto la tabla y el combox con los datos.
     @FXML
     private ComboBox<Tipo> cbTipo;
 
@@ -36,13 +37,16 @@ public class AppController implements Initializable {
 
     CocheCRUD crud;
     List<Coche> coches;
-    Coche cocheSeleccionado;
+    Coche cocheSeleccionado = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cargarTabla();
         cargarCB();
-
+        tcMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
+        tcMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
+        tcModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
+        tcTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     }
 
     public AppController() {
@@ -51,7 +55,7 @@ public class AppController implements Initializable {
 
 
     @FXML
-    void nuevoCoche(ActionEvent event) {
+    void limpiarCampos(ActionEvent event) {
         tfMatricula.setText("");
         tfMarca.setText("");
         tfModelo.setText("");
@@ -60,53 +64,83 @@ public class AppController implements Initializable {
 
     @FXML
     void guardarCoche(ActionEvent event) {
+        /*
+        Este metodo guarda en base de datos el coche creado con los campos de texto. para ello, recojo los datos
+        y los paso a insertarCoche del cocheCrud
+         */
         List<String> campos = new ArrayList<>();
         String matricula = tfMatricula.getText();
         String marca = tfMarca.getText();
         String modelo = tfModelo.getText();
-        String tipo = cbTipo.getValue().toString();
+        String tipo;
+        if (cbTipo.getValue() != null) {
+            tipo = cbTipo.getValue().toString();
+        } else {
+            tipo = null;
+        }
         insertarCampo(campos, matricula);
         insertarCampo(campos, marca);
         insertarCampo(campos, modelo);
         insertarCampo(campos, tipo);
         crud.insertarCoche(campos);
         cargarTabla();
-        nuevoCoche(event);
+        limpiarCampos(event);
     }
 
     @FXML
     void modificarCoche(ActionEvent event) {
+        /*
+        Este metodo modifica el coche seleccionado. Para ello, recogo los datos de los textField y el coche seleccionado.
+        Después, llamo a la función de crud para modificar el coche que requiere de una lista de String de campos
+         */
         if (cocheSeleccionado != null) {
             List<String> campos = new ArrayList<>();
             String matricula = tfMatricula.getText();
             String marca = tfMarca.getText();
             String modelo = tfModelo.getText();
-            String tipo = cbTipo.getValue().toString();
+            String tipo;
+            if (cbTipo.getValue() != null) {
+                tipo = cbTipo.getValue().toString();
+            } else {
+                tipo = null;
+            }
             insertarCampo(campos, matricula);
             insertarCampo(campos, marca);
             insertarCampo(campos, modelo);
             insertarCampo(campos, tipo);
             crud.modificarCoche(campos, cocheSeleccionado);
-            nuevoCoche(event);
+            limpiarCampos(event);
             cargarTabla();
+            cocheSeleccionado = null;
+
+        } else {
+            AlertUtils.mostrarError("Seleccione primero el coche");
         }
     }
 
     @FXML
     void eliminarCoche(ActionEvent event) {
+        /*
+        Este metodo elimina el coche. Para ello, consigo el coche seleccionado y pregunto al usuario si realmente
+        quiere borrar el coche seleccionado
+         */
         if (cocheSeleccionado != null) {
             int opcion = JOptionPane.showConfirmDialog(null,
                     "¿Está seguro de que desea borrar el coche?", "Confirmación", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
                 crud.eliminarCoche(cocheSeleccionado);
-                nuevoCoche(event);
+                limpiarCampos(event);
                 cargarTabla();
+                cocheSeleccionado = null;
             }
+        } else {
+            AlertUtils.mostrarError("Seleccione primero el coche");
         }
     }
 
     @FXML
     void getCoche(MouseEvent event) {
+        // Metodo que selecciona el coche en la tabla.
         try {
             cocheSeleccionado = tvCoches.getSelectionModel().getSelectedItem();
             cargarData();
@@ -118,36 +152,36 @@ public class AppController implements Initializable {
 
     @FXML
     void salirApp(ActionEvent event) {
+        // Metodo para salir del programa.
         int opcion = JOptionPane.showConfirmDialog(null,
                 "¿Está seguro de que desea salir?", "Confirmación", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
             crud.salir();
-            System.exit(0); // CERRAR APLICACIÓN
+            System.exit(0);
         }
     }
 
     public void cargarTabla() {
+        /*
+         para cargar la tabla, primero limpio la tabla (para evitar problemas)
+         y cojo del crud los coches que me lo devuelve como una lista y la vuelco en la tabla.
+         Para que se vean correctamente, le pongo a cada tableColumn el valor de la propiedad que tiene que coger.
+         */
         tvCoches.getItems().clear();
         coches = crud.getCoches();
 
         tvCoches.setItems(FXCollections.observableList(coches));
-
-        tcMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
-        tcMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
-        tcModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
-        tcTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     }
 
     public void cargarCB() {
+        // Al igual que el cargarTabla, cargo los valores del enum Tipo.
         cbTipo.getItems().clear();
         cbTipo.getItems().addAll(Tipo.values());
     }
 
-    public void insertarCampo(List<String> campos, String campo) {
-        campos.add(campo);
-    }
 
     public void cargarData() {
+        // Este metodo carga los datos del coche seleccionado.
         tfMatricula.setText(cocheSeleccionado.getMatricula());
         tfMarca.setText(cocheSeleccionado.getMarca());
         tfModelo.setText(cocheSeleccionado.getModelo());
@@ -158,5 +192,10 @@ public class AppController implements Initializable {
             }
         }
         cbTipo.setValue(tipoCoche);
+    }
+
+    public void insertarCampo(List<String> campos, String campo) {
+        // Metodo para insertar en un array de Strings el campo que me interesa meter.
+        campos.add(campo);
     }
 }

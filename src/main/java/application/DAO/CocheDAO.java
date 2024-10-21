@@ -16,9 +16,9 @@ import java.util.List;
 public class CocheDAO {
     MongoClient con;
     Gson gson = new Gson();
+    MongoCollection<Document> collection = null;
 
     public void conectarBD() {
-        MongoCollection<Document> collection = null;
         try {
             con = ConnectionDB.conectar();
 
@@ -45,7 +45,7 @@ public class CocheDAO {
 
     public List<Coche> getCoches() {
         List<Coche> coches = new ArrayList<>();
-        MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
+       // MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
         MongoCursor<Document> cursor = collection.find().iterator();
         try {
             while (cursor.hasNext()) {
@@ -59,14 +59,14 @@ public class CocheDAO {
     }
 
     public void insertarCoche(Coche coche) {
-        MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
+        //MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
         String json = gson.toJson(coche);
         Document doc = Document.parse(json);
         collection.insertOne(doc);
     }
 
     public void modificarCoche(Coche nuevoCoche, Coche antiguoCoche) {
-        MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
+       // MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
         collection.updateOne(new Document("matricula", antiguoCoche.getMatricula()),
                 new Document("$set", new Document("matricula", nuevoCoche.getMatricula()).append("marca", nuevoCoche.getMarca()).append("modelo", nuevoCoche.getModelo()).append("tipo", nuevoCoche.getTipo())
                 )
