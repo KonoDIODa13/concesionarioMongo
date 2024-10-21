@@ -50,12 +50,23 @@ public class CocheCRUD {
         return bool;
     }
 
+    public void modificarCoche(List<String> campos, Coche antiguoCoche) {
+        if (!comprobaciones(campos)) return;
+        Coche nuevoCoche = new Coche(campos.get(0), campos.get(1), campos.get(2), campos.get(3));
+        dao.modificarCoche(nuevoCoche, antiguoCoche);
+        AlertUtils.mostrarConfirmacion("Coche modificado correctamente");
+    }
+
+    public void eliminarCoche(Coche coche){
+        dao.eliminarCoche(coche);
+        AlertUtils.mostrarConfirmacion("Coche eliminado correctamente");
+    }
+
     public boolean comprobaciones(List<String> campos) {
         return compruebaCampo(campos.get(0), "matricula") &&
                 compruebaCampo(campos.get(1), "marca") &&
                 compruebaCampo(campos.get(2), "modelo") &&
                 compruebaCampo(campos.get(3), "tipo");
     }
-
 
 }

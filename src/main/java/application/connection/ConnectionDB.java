@@ -20,10 +20,10 @@ public class ConnectionDB {
             String username = configuration.getProperty("username");
             String password = configuration.getProperty("password");
             String port = configuration.getProperty("port");
-            String authSource = configuration.getProperty("authSource");
+            String host = configuration.getProperty("host");
 
             // final MongoClient conexion = new MongoClient(new MongoClientURI("mongodb://admin:1234@localhost:27017/?authSource=admin"));
-            final MongoClient conexion = new MongoClient(new MongoClientURI("mongodb://" + username + ":" + password + "@localhost:" + port + "/?authSource=" + authSource));
+            final MongoClient conexion = new MongoClient(new MongoClientURI("mongodb://" + username + ":" + password + "@" + host + ":" + port + "/?authSource=admin"));
 
             System.out.println("Conectada correctamente a la BD");
             return conexion;

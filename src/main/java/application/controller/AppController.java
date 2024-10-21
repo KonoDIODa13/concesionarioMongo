@@ -5,7 +5,6 @@ import application.domain.Coche;
 import application.domain.Tipo;
 import application.utils.AlertUtils;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 
 import javax.swing.*;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -38,6 +36,7 @@ public class AppController implements Initializable {
 
     CocheCRUD crud;
     List<Coche> coches;
+    Coche cocheSeleccionado;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -77,17 +76,43 @@ public class AppController implements Initializable {
 
     @FXML
     void modificarCoche(ActionEvent event) {
-
+        if (cocheSeleccionado != null) {
+            List<String> campos = new ArrayList<>();
+            String matricula = tfMatricula.getText();
+            String marca = tfMarca.getText();
+            String modelo = tfModelo.getText();
+            String tipo = cbTipo.getValue().toString();
+            insertarCampo(campos, matricula);
+            insertarCampo(campos, marca);
+            insertarCampo(campos, modelo);
+            insertarCampo(campos, tipo);
+            crud.modificarCoche(campos, cocheSeleccionado);
+            nuevoCoche(event);
+            cargarTabla();
+        }
     }
 
     @FXML
-    void borrarCoche(ActionEvent event) {
-
+    void eliminarCoche(ActionEvent event) {
+        if (cocheSeleccionado != null) {
+            int opcion = JOptionPane.showConfirmDialog(null,
+                    "¿Está seguro de que desea borrar el coche?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            if (opcion == JOptionPane.YES_OPTION) {
+                crud.eliminarCoche(cocheSeleccionado);
+                nuevoCoche(event);
+                cargarTabla();
+            }
+        }
     }
 
     @FXML
     void getCoche(MouseEvent event) {
-
+        try {
+            cocheSeleccionado = tvCoches.getSelectionModel().getSelectedItem();
+            cargarData();
+        } catch (NullPointerException e) {
+            AlertUtils.mostrarError("No has seleccionado ningun dato.\n");
+        }
 
     }
 
@@ -120,5 +145,18 @@ public class AppController implements Initializable {
 
     public void insertarCampo(List<String> campos, String campo) {
         campos.add(campo);
+    }
+
+    public void cargarData() {
+        tfMatricula.setText(cocheSeleccionado.getMatricula());
+        tfMarca.setText(cocheSeleccionado.getMarca());
+        tfModelo.setText(cocheSeleccionado.getModelo());
+        Tipo tipoCoche = null;
+        for (Tipo tipo : Tipo.values()) {
+            if (tipo.toString().equals(cocheSeleccionado.getTipo())) {
+                tipoCoche = tipo;
+            }
+        }
+        cbTipo.setValue(tipoCoche);
     }
 }

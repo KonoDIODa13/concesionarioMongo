@@ -7,6 +7,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -14,12 +15,10 @@ import java.util.List;
 
 public class CocheDAO {
     MongoClient con;
-    MongoCollection<Document> collection = null;
     Gson gson = new Gson();
 
     public void conectarBD() {
-        String json;
-        Document doc;
+        MongoCollection<Document> collection = null;
         try {
             con = ConnectionDB.conectar();
 
@@ -46,7 +45,7 @@ public class CocheDAO {
 
     public List<Coche> getCoches() {
         List<Coche> coches = new ArrayList<>();
-        // MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
+        MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
         MongoCursor<Document> cursor = collection.find().iterator();
         try {
             while (cursor.hasNext()) {
@@ -61,9 +60,21 @@ public class CocheDAO {
 
     public void insertarCoche(Coche coche) {
         MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
-        Gson gson = new Gson();
         String json = gson.toJson(coche);
         Document doc = Document.parse(json);
         collection.insertOne(doc);
+    }
+
+    public void modificarCoche(Coche nuevoCoche, Coche antiguoCoche) {
+        MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
+        collection.updateOne(new Document("matricula", antiguoCoche.getMatricula()),
+                new Document("$set", new Document("matricula", nuevoCoche.getMatricula()).append("marca", nuevoCoche.getMarca()).append("modelo", nuevoCoche.getModelo()).append("tipo", nuevoCoche.getTipo())
+                )
+        );
+    }
+
+    public void eliminarCoche(Coche coche) {
+        MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
+        collection.deleteOne(new Document("matricula", coche.getMatricula()));
     }
 }
