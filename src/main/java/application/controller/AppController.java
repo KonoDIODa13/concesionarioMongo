@@ -41,10 +41,7 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        /*
-        Este metodo se realiza antes de cargar el componente. En el, cargo la tabla y el combox.
-         */
-
+        // Este metodo se realiza antes de cargar el componente. En el, cargo la tabla y el combox.
         cargarTabla();
         cargarCB();
         tcMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
@@ -54,12 +51,14 @@ public class AppController implements Initializable {
     }
 
     public AppController() {
+        // Creo un constructor en el que instancio el crud para acceder a la funcionalidad del crud.
         crud = new CocheCRUD();
     }
 
 
     @FXML
     void limpiarCampos(ActionEvent event) {
+        // metodo para limpiar tanto los campos como el combox.
         tfMatricula.setText("");
         tfMarca.setText("");
         tfModelo.setText("");
@@ -98,6 +97,7 @@ public class AppController implements Initializable {
         /*
         Este metodo modifica el coche seleccionado. Para ello, recogo los datos de los textField y el coche seleccionado.
         Después, llamo a la función de crud para modificar el coche que requiere de una lista de String de campos
+        y el coche seleccionado.
          */
         if (cocheSeleccionado != null) {
             List<String> campos = new ArrayList<>();
@@ -131,7 +131,7 @@ public class AppController implements Initializable {
     void eliminarCoche(ActionEvent event) {
         /*
         Este metodo elimina el coche. Para ello, consigo el coche seleccionado y pregunto al usuario si realmente
-        quiere borrar el coche seleccionado
+        quiere borrar el coche seleccionado.
          */
         if (cocheSeleccionado != null) {
             int opcion = JOptionPane.showConfirmDialog(null,
