@@ -21,17 +21,12 @@ public class CocheDAO {
     public void conectarBD() {
         try {
             con = ConnectionDB.conectar();
-
-            //La clase MongoDatabase nos ofrece el método getDatabase() que nos permite seleccionar la base de datos
-            //con la que queremos trabajar
-            // Me conecto a la BD "taller" si NO existe la crea.
-
             MongoDatabase database = con.getDatabase("concesionario");
 
-            //creando una coleccion
             database.createCollection("coche");
+
             System.out.println("Coleccion creada Satisfactoriamente.\n");
-            // instancio la coleccion a la tabla que me interesa
+
             collection = database.getCollection("coche");
 
         } catch (Exception exception) {
@@ -59,14 +54,12 @@ public class CocheDAO {
     }
 
     public void insertarCoche(Coche coche) {
-        //MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
         String json = gson.toJson(coche);
         Document doc = Document.parse(json);
         collection.insertOne(doc);
     }
 
     public void modificarCoche(Coche nuevoCoche, Coche antiguoCoche) {
-       // MongoCollection<Document> collection = con.getDatabase("concesionario").getCollection("coche");
         collection.updateOne(new Document("matricula", antiguoCoche.getMatricula()),
                 new Document("$set", new Document("matricula", nuevoCoche.getMatricula()).append("marca", nuevoCoche.getMarca()).append("modelo", nuevoCoche.getModelo()).append("tipo", nuevoCoche.getTipo())
                 )

@@ -41,6 +41,10 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        /*
+        Este metodo se realiza antes de cargar el componente. En el, cargo la tabla y el combox.
+         */
+
         cargarTabla();
         cargarCB();
         tcMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
@@ -82,7 +86,9 @@ public class AppController implements Initializable {
         insertarCampo(campos, marca);
         insertarCampo(campos, modelo);
         insertarCampo(campos, tipo);
-        crud.insertarCoche(campos);
+        if (crud.insertarCoche(campos))
+            AlertUtils.mostrarConfirmacion("Coche creado correctamente.");
+
         cargarTabla();
         limpiarCampos(event);
     }
@@ -104,15 +110,18 @@ public class AppController implements Initializable {
             } else {
                 tipo = null;
             }
+
             insertarCampo(campos, matricula);
             insertarCampo(campos, marca);
             insertarCampo(campos, modelo);
             insertarCampo(campos, tipo);
-            crud.modificarCoche(campos, cocheSeleccionado);
-            limpiarCampos(event);
-            cargarTabla();
-            cocheSeleccionado = null;
 
+            if (crud.modificarCoche(campos, cocheSeleccionado)) {
+                AlertUtils.mostrarConfirmacion("Coche modificado correctamente.");
+                limpiarCampos(event);
+                cargarTabla();
+                cocheSeleccionado = null;
+            }
         } else {
             AlertUtils.mostrarError("Seleccione primero el coche");
         }
@@ -127,6 +136,7 @@ public class AppController implements Initializable {
         if (cocheSeleccionado != null) {
             int opcion = JOptionPane.showConfirmDialog(null,
                     "¿Está seguro de que desea borrar el coche?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
             if (opcion == JOptionPane.YES_OPTION) {
                 crud.eliminarCoche(cocheSeleccionado);
                 limpiarCampos(event);
