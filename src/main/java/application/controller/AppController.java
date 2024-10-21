@@ -63,6 +63,7 @@ public class AppController implements Initializable {
         tfMarca.setText("");
         tfModelo.setText("");
         cargarCB();
+        cocheSeleccionado = null;
     }
 
     @FXML
@@ -120,7 +121,6 @@ public class AppController implements Initializable {
                 AlertUtils.mostrarConfirmacion("Coche modificado correctamente.");
                 limpiarCampos(event);
                 cargarTabla();
-                cocheSeleccionado = null;
             }
         } else {
             AlertUtils.mostrarError("Seleccione primero el coche");
@@ -141,7 +141,6 @@ public class AppController implements Initializable {
                 crud.eliminarCoche(cocheSeleccionado);
                 limpiarCampos(event);
                 cargarTabla();
-                cocheSeleccionado = null;
             }
         } else {
             AlertUtils.mostrarError("Seleccione primero el coche");
